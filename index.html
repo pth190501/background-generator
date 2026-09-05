@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Visual background generator for gradients, shadows, corner radius and code/image export." />
+  <title>Background Studio</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1>Background Studio</h1>
+      <p>Gradient · Shadow · Radius · Border · Image & Code Export</p>
+    </div>
+    <div class="top-actions">
+      <button id="randomBtn" class="secondary">Random</button>
+      <button id="resetBtn" class="secondary">Reset</button>
+      <button id="savePresetBtn" class="primary">Save preset</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="panel controls-panel">
+      <section class="control-section">
+        <div class="section-title-row">
+          <h2>Canvas</h2>
+          <span id="sizeLabel" class="badge">640 × 400</span>
+        </div>
+        <div class="grid-2">
+          <label>Width <input id="widthInput" type="number" min="16" max="4096" step="1" value="640"></label>
+          <label>Height <input id="heightInput" type="number" min="16" max="4096" step="1" value="400"></label>
+        </div>
+        <label class="switch-row"><input id="transparentOutsideInput" type="checkbox" checked><span>Transparent outside rounded shape</span></label>
+      </section>
+
+      <section class="control-section">
+        <div class="section-title-row"><h2>Gradient</h2><button id="addStopBtn" class="tiny">+ Stop</button></div>
+        <div class="grid-2">
+          <label>Type
+            <select id="gradientTypeInput">
+              <option value="linear">Linear</option>
+              <option value="radial">Radial</option>
+              <option value="conic">Conic</option>
+            </select>
+          </label>
+          <label id="angleField">Angle <input id="angleInput" type="number" min="0" max="360" step="1" value="135"></label>
+        </div>
+        <div id="radialControls" class="grid-2 hidden">
+          <label>Center X % <input id="centerXInput" type="number" min="0" max="100" step="1" value="50"></label>
+          <label>Center Y % <input id="centerYInput" type="number" min="0" max="100" step="1" value="50"></label>
+        </div>
+        <div id="stopsList" class="stops-list"></div>
+      </section>
+
+      <section class="control-section">
+        <div class="section-title-row"><h2>Shadow</h2><label class="mini-switch"><input id="shadowEnabledInput" type="checkbox" checked><span>On</span></label></div>
+        <div class="grid-4">
+          <label>X <input id="shadowXInput" type="number" min="-200" max="200" value="0"></label>
+          <label>Y <input id="shadowYInput" type="number" min="-200" max="200" value="18"></label>
+          <label>Blur <input id="shadowBlurInput" type="number" min="0" max="300" value="36"></label>
+          <label>Spread <input id="shadowSpreadInput" type="number" min="-100" max="200" value="0"></label>
+        </div>
+        <div class="grid-2 color-row">
+          <label>Color <input id="shadowColorInput" type="text" value="#000000" maxlength="7"></label>
+          <label>Opacity <input id="shadowOpacityInput" type="number" min="0" max="100" value="22"><span class="suffix">%</span></label>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <div class="section-title-row"><h2>Corner radius</h2><label class="mini-switch"><input id="linkRadiusInput" type="checkbox" checked><span>Linked</span></label></div>
+        <div class="radius-grid">
+          <label>Top left <input id="radiusTLInput" type="number" min="0" max="1000" value="32"></label>
+          <label>Top right <input id="radiusTRInput" type="number" min="0" max="1000" value="32"></label>
+          <label>Bottom left <input id="radiusBLInput" type="number" min="0" max="1000" value="32"></label>
+          <label>Bottom right <input id="radiusBRInput" type="number" min="0" max="1000" value="32"></label>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <h2>Border</h2>
+        <div class="grid-3">
+          <label>Width <input id="borderWidthInput" type="number" min="0" max="50" step="0.5" value="0"></label>
+          <label>Color <input id="borderColorInput" type="text" value="#FFFFFF" maxlength="7"></label>
+          <label>Opacity <input id="borderOpacityInput" type="number" min="0" max="100" value="100"><span class="suffix">%</span></label>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <div class="section-title-row"><h2>Presets</h2><button id="exportJsonBtn" class="tiny">Export JSON</button></div>
+        <div id="presetList" class="preset-list"></div>
+        <label class="file-button">Import JSON<input id="importJsonInput" type="file" accept="application/json,.json"></label>
+      </section>
+    </aside>
+
+    <section class="stage-column">
+      <section class="panel preview-panel">
+        <div class="section-title-row">
+          <h2>Live preview</h2>
+          <div class="preview-modes">
+            <button class="preview-mode active" data-bg="checker">Checker</button>
+            <button class="preview-mode" data-bg="light">Light</button>
+            <button class="preview-mode" data-bg="dark">Dark</button>
+          </div>
+        </div>
+        <div id="previewStage" class="preview-stage checker">
+          <div id="previewBox" class="preview-box"></div>
+        </div>
+      </section>
+
+      <section class="panel export-panel">
+        <div class="section-title-row"><h2>Export image</h2><span id="exportHint" class="muted">Raster exports include shadow padding.</span></div>
+        <div class="export-controls">
+          <label>Format
+            <select id="exportFormatInput">
+              <option value="png">PNG</option>
+              <option value="webp">WebP</option>
+              <option value="jpeg">JPEG</option>
+              <option value="svg">SVG</option>
+              <option value="pdf">PDF</option>
+            </select>
+          </label>
+          <label>Scale
+            <select id="exportScaleInput">
+              <option value="1">1×</option>
+              <option value="2" selected>2×</option>
+              <option value="3">3×</option>
+              <option value="4">4×</option>
+            </select>
+          </label>
+          <label>JPEG quality <input id="jpegQualityInput" type="number" min="10" max="100" value="92"><span class="suffix">%</span></label>
+          <button id="downloadImageBtn" class="primary export-button">Download</button>
+        </div>
+        <p id="exportStatus" class="status" aria-live="polite"></p>
+      </section>
+
+      <section class="panel code-panel">
+        <div class="code-tabs" role="tablist">
+          <button class="code-tab active" data-code="css">CSS</button>
+          <button class="code-tab" data-code="uikit">UIKit</button>
+          <button class="code-tab" data-code="swiftui">SwiftUI</button>
+        </div>
+        <div class="code-toolbar"><span id="codeTitle">CSS</span><button id="copyCodeBtn" class="tiny">Copy code</button></div>
+        <pre><code id="codeOutput"></code></pre>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    Runs fully in your browser. No backend and no uploads.
+  </footer>
+</body>
+</html>
