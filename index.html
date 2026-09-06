@@ -6,7 +6,6 @@
   <meta name="description" content="Visual background generator for gradients, shadows, corner radius and code/image export." />
   <title>Background Studio</title>
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="enhancements.css" />
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" defer></script>
   <script src="app.js" defer></script>
 </head>
@@ -14,7 +13,7 @@
   <header class="topbar">
     <div>
       <h1>Background Studio</h1>
-      <p>Gradient · Shadow · Radius · Border · Image & Code Export</p>
+      <p>Gradient · Shadow · Radius · Tag · Image & Code Export</p>
     </div>
     <div class="top-actions">
       <button id="randomBtn" class="secondary">Random</button>
@@ -35,6 +34,34 @@
           <label>Height <input id="heightInput" type="number" min="16" max="4096" step="1" value="400"></label>
         </div>
         <label class="switch-row"><input id="transparentOutsideInput" type="checkbox" checked><span>Transparent outside rounded shape</span></label>
+      </section>
+
+      <section class="control-section tag-section">
+        <div class="section-title-row">
+          <div>
+            <h2>Tag / Badge</h2>
+            <p class="section-note">Dynamic text badge with an Auto Layout friendly UIKit export.</p>
+          </div>
+          <label class="mini-switch"><input id="tagEnabledInput" type="checkbox"><span>On</span></label>
+        </div>
+        <div id="tagControls" class="tag-controls hidden">
+          <label>Text <input id="tagTextInput" type="text" value="Hot" placeholder="Hot"></label>
+          <div class="grid-2">
+            <label>Font size <input id="tagFontSizeInput" type="number" min="8" max="80" step="1" value="14"></label>
+            <label>Font weight <input id="tagFontWeightInput" type="number" min="100" max="900" step="100" value="600"></label>
+          </div>
+          <div class="grid-3">
+            <label>H padding <input id="tagHPaddingInput" type="number" min="0" max="100" step="1" value="8"></label>
+            <label>V padding <input id="tagVPaddingInput" type="number" min="0" max="100" step="1" value="4"></label>
+            <label>Tip width <input id="tagTipWidthInput" type="number" min="0" max="100" step="1" value="6"></label>
+          </div>
+          <div class="grid-3">
+            <label>Min height <input id="tagMinHeightInput" type="number" min="0" max="200" step="1" value="24"></label>
+            <label>Background <input id="tagBgColorInput" type="text" value="#F04438" maxlength="7"></label>
+            <label>Text color <input id="tagTextColorInput" type="text" value="#FFFFFF" maxlength="7"></label>
+          </div>
+          <p class="section-note">Width is never fixed: the badge expands from its text + padding + tip.</p>
+        </div>
       </section>
 
       <section class="control-section css-import-section">
@@ -76,33 +103,33 @@
       <section class="control-section">
         <div class="section-title-row"><h2>Shadow</h2><label class="mini-switch"><input id="shadowEnabledInput" type="checkbox" checked><span>On</span></label></div>
         <div class="grid-4">
-          <label>X <input id="shadowXInput" type="number" min="-500" max="500" value="0"></label>
-          <label>Y <input id="shadowYInput" type="number" min="-500" max="500" value="18"></label>
-          <label>Blur <input id="shadowBlurInput" type="number" min="0" max="500" value="36"></label>
-          <label>Spread <input id="shadowSpreadInput" type="number" min="-500" max="500" value="0"></label>
+          <label>X <input id="shadowXInput" type="number" min="-200" max="200" value="0"></label>
+          <label>Y <input id="shadowYInput" type="number" min="-200" max="200" value="18"></label>
+          <label>Blur <input id="shadowBlurInput" type="number" min="0" max="300" value="36"></label>
+          <label>Spread <input id="shadowSpreadInput" type="number" min="-100" max="200" value="0"></label>
         </div>
         <div class="grid-2 color-row">
           <label>Color <input id="shadowColorInput" type="text" value="#000000" maxlength="7"></label>
-          <label>Opacity <input id="shadowOpacityInput" type="number" min="0" max="100" step="0.01" value="22"><span class="suffix">%</span></label>
+          <label>Opacity <input id="shadowOpacityInput" type="number" min="0" max="100" value="22"><span class="suffix">%</span></label>
         </div>
       </section>
 
       <section class="control-section">
         <div class="section-title-row"><h2>Corner radius</h2><label class="mini-switch"><input id="linkRadiusInput" type="checkbox" checked><span>Linked</span></label></div>
         <div class="radius-grid">
-          <label>Top left <input id="radiusTLInput" type="number" min="0" max="1000" step="0.01" value="32"></label>
-          <label>Top right <input id="radiusTRInput" type="number" min="0" max="1000" step="0.01" value="32"></label>
-          <label>Bottom left <input id="radiusBLInput" type="number" min="0" max="1000" step="0.01" value="32"></label>
-          <label>Bottom right <input id="radiusBRInput" type="number" min="0" max="1000" step="0.01" value="32"></label>
+          <label>Top left <input id="radiusTLInput" type="number" min="0" max="1000" value="32"></label>
+          <label>Top right <input id="radiusTRInput" type="number" min="0" max="1000" value="32"></label>
+          <label>Bottom left <input id="radiusBLInput" type="number" min="0" max="1000" value="32"></label>
+          <label>Bottom right <input id="radiusBRInput" type="number" min="0" max="1000" value="32"></label>
         </div>
       </section>
 
       <section class="control-section">
         <h2>Border</h2>
         <div class="grid-3">
-          <label>Width <input id="borderWidthInput" type="number" min="0" max="100" step="0.5" value="0"></label>
+          <label>Width <input id="borderWidthInput" type="number" min="0" max="50" step="0.5" value="0"></label>
           <label>Color <input id="borderColorInput" type="text" value="#FFFFFF" maxlength="7"></label>
-          <label>Opacity <input id="borderOpacityInput" type="number" min="0" max="100" step="0.01" value="100"><span class="suffix">%</span></label>
+          <label>Opacity <input id="borderOpacityInput" type="number" min="0" max="100" value="100"><span class="suffix">%</span></label>
         </div>
       </section>
 
