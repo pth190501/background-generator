@@ -21,7 +21,7 @@ body {
   background: var(--bg);
   color: var(--text);
 }
-button, input, select { font: inherit; }
+button, input, select, textarea { font: inherit; }
 button { cursor: pointer; }
 
 .topbar {
@@ -60,7 +60,7 @@ h2 { margin: 0 0 14px; font-size: 14px; letter-spacing: .01em; }
 .control-section > .section-title-row { margin-bottom: 14px; }
 
 label { display: grid; gap: 7px; color: var(--muted); font-size: 12px; position: relative; }
-input, select {
+input, select, textarea {
   width: 100%;
   min-height: 40px;
   padding: 8px 10px;
@@ -70,7 +70,7 @@ input, select {
   color: var(--text);
   outline: none;
 }
-input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,140,255,.14); }
+input:focus, select:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,140,255,.14); }
 input[type="checkbox"] { width: 18px; min-height: 18px; accent-color: var(--accent); }
 .suffix { position: absolute; right: 12px; bottom: 12px; color: var(--muted); pointer-events: none; }
 
@@ -81,7 +81,6 @@ input[type="checkbox"] { width: 18px; min-height: 18px; accent-color: var(--acce
 .radius-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
 .color-row { margin-top: 10px; }
 .hidden { display: none !important; }
-
 .switch-row, .mini-switch { display: flex; align-items: center; gap: 8px; }
 .switch-row { margin-top: 12px; }
 .mini-switch { color: var(--muted); }
@@ -157,6 +156,39 @@ code { display: block; padding: 16px; min-width: max-content; font: 12px/1.65 ui
 
 footer { padding: 22px; text-align: center; color: var(--muted); font-size: 12px; }
 
+textarea.css-import {
+  width: 100%;
+  resize: vertical;
+  min-height: 132px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--input);
+  color: var(--text);
+  outline: none;
+  font: 12px/1.55 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+.section-note { margin: -8px 0 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
+.css-import-section .section-title-row { align-items: flex-start; }
+.import-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; }
+.status.compact { margin: 0; min-height: 0; }
+.status.compact[data-kind="ok"] { color: #78d69b; }
+.status.compact[data-kind="warn"] { color: #f5c16c; }
+.status.compact[data-kind="error"] { color: var(--danger); }
+.radial-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-top: 10px; }
+.tag-controls { display: grid; gap: 10px; }
+.tag-section .section-title-row { align-items: flex-start; }
+.preview-box.tag-preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  white-space: nowrap;
+  box-sizing: border-box;
+  line-height: 1.2;
+  max-width: none;
+  user-select: none;
+}
+
 @media (max-width: 980px) {
   .workspace { grid-template-columns: 1fr; }
   .preview-stage { min-height: 420px; padding: 56px; }
@@ -169,8 +201,9 @@ footer { padding: 22px; text-align: center; color: var(--muted); font-size: 12px
   .stop-row { grid-template-columns: 34px minmax(90px,1fr) 62px 60px 34px; }
 }
 @media (max-width: 420px) {
-  .grid-2, .grid-3, .grid-4, .radius-grid, .export-controls { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-4, .radius-grid, .export-controls, .radial-grid { grid-template-columns: 1fr; }
   .preview-stage { padding: 34px; }
   .stop-row { grid-template-columns: 34px 1fr 58px 34px; }
   .stop-opacity { display: none; }
+  .import-actions { align-items: stretch; flex-direction: column; }
 }
