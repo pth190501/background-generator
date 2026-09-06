@@ -5,9 +5,12 @@ A zero-backend visual background generator for designers and iOS/web developers.
 ## Features
 
 - Linear, radial and conic gradients
+- Exact elliptical radial size X/Y with centers outside bounds (e.g. `33.82% 122.46%`)
+- Paste CSS / Figma style blocks to auto-fill gradient, shadow, border and radius controls
 - Up to 8 color stops with HEX, opacity and position
 - Shadow controls: X, Y, blur, spread, color and opacity
 - Independent top-left / top-right / bottom-left / bottom-right corner radius
+- Dynamic Tag / Badge mode with text-driven width, pointed tip, live preview and Auto Layout-friendly UIKit export
 - Border width, color and opacity
 - Custom canvas width and height
 - Realtime checker/light/dark preview
@@ -15,7 +18,7 @@ A zero-backend visual background generator for designers and iOS/web developers.
 - Import/export preset JSON
 - Code output:
   - CSS
-  - UIKit / Swift (`CAGradientLayer`, `CAShapeLayer`)
+  - UIKit / Swift (`CAGradientLayer`, `CAShapeLayer`, custom elliptical radial renderer, intrinsic-content-size tag view)
   - SwiftUI
 - Image output:
   - PNG
