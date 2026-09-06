@@ -6,6 +6,7 @@
   <meta name="description" content="Visual background generator for gradients, shadows, corner radius and code/image export." />
   <title>Background Studio</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="enhancements.css" />
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js" defer></script>
   <script src="app.js" defer></script>
 </head>
@@ -36,6 +37,21 @@
         <label class="switch-row"><input id="transparentOutsideInput" type="checkbox" checked><span>Transparent outside rounded shape</span></label>
       </section>
 
+      <section class="control-section css-import-section">
+        <div class="section-title-row">
+          <div>
+            <h2>Paste CSS / Figma style</h2>
+            <p class="section-note">Paste a style block and every recognized field is filled automatically.</p>
+          </div>
+          <button id="applyCssBtn" class="primary tiny">Parse & Apply</button>
+        </div>
+        <textarea id="cssImportInput" class="css-import" rows="8" spellcheck="false" placeholder="border-radius: var(--radius-20x, 20px);&#10;background: radial-gradient(147.02% 142.82% at 33.82% 122.46%, #DBEAFF 52.4%, #FFF2D7 86.74%, #F78353 100%);&#10;box-shadow: 0 4px 32px 0 rgba(10, 13, 18, 0.08);"></textarea>
+        <div class="import-actions">
+          <span id="cssImportStatus" class="status compact" aria-live="polite">Paste CSS to auto-apply. Ctrl/⌘ + Enter also works.</span>
+          <button id="loadCssExampleBtn" class="tiny">Load example</button>
+        </div>
+      </section>
+
       <section class="control-section">
         <div class="section-title-row"><h2>Gradient</h2><button id="addStopBtn" class="tiny">+ Stop</button></div>
         <div class="grid-2">
@@ -48,9 +64,11 @@
           </label>
           <label id="angleField">Angle <input id="angleInput" type="number" min="0" max="360" step="1" value="135"></label>
         </div>
-        <div id="radialControls" class="grid-2 hidden">
-          <label>Center X % <input id="centerXInput" type="number" min="0" max="100" step="1" value="50"></label>
-          <label>Center Y % <input id="centerYInput" type="number" min="0" max="100" step="1" value="50"></label>
+        <div id="radialControls" class="radial-grid hidden">
+          <label>Center X % <input id="centerXInput" type="number" min="-500" max="500" step="0.01" value="50"></label>
+          <label>Center Y % <input id="centerYInput" type="number" min="-500" max="500" step="0.01" value="50"></label>
+          <label id="radialSizeXField">Radius X % <input id="radialSizeXInput" type="number" min="0.01" max="1000" step="0.01" value="100"></label>
+          <label id="radialSizeYField">Radius Y % <input id="radialSizeYInput" type="number" min="0.01" max="1000" step="0.01" value="100"></label>
         </div>
         <div id="stopsList" class="stops-list"></div>
       </section>
@@ -58,33 +76,33 @@
       <section class="control-section">
         <div class="section-title-row"><h2>Shadow</h2><label class="mini-switch"><input id="shadowEnabledInput" type="checkbox" checked><span>On</span></label></div>
         <div class="grid-4">
-          <label>X <input id="shadowXInput" type="number" min="-200" max="200" value="0"></label>
-          <label>Y <input id="shadowYInput" type="number" min="-200" max="200" value="18"></label>
-          <label>Blur <input id="shadowBlurInput" type="number" min="0" max="300" value="36"></label>
-          <label>Spread <input id="shadowSpreadInput" type="number" min="-100" max="200" value="0"></label>
+          <label>X <input id="shadowXInput" type="number" min="-500" max="500" value="0"></label>
+          <label>Y <input id="shadowYInput" type="number" min="-500" max="500" value="18"></label>
+          <label>Blur <input id="shadowBlurInput" type="number" min="0" max="500" value="36"></label>
+          <label>Spread <input id="shadowSpreadInput" type="number" min="-500" max="500" value="0"></label>
         </div>
         <div class="grid-2 color-row">
           <label>Color <input id="shadowColorInput" type="text" value="#000000" maxlength="7"></label>
-          <label>Opacity <input id="shadowOpacityInput" type="number" min="0" max="100" value="22"><span class="suffix">%</span></label>
+          <label>Opacity <input id="shadowOpacityInput" type="number" min="0" max="100" step="0.01" value="22"><span class="suffix">%</span></label>
         </div>
       </section>
 
       <section class="control-section">
         <div class="section-title-row"><h2>Corner radius</h2><label class="mini-switch"><input id="linkRadiusInput" type="checkbox" checked><span>Linked</span></label></div>
         <div class="radius-grid">
-          <label>Top left <input id="radiusTLInput" type="number" min="0" max="1000" value="32"></label>
-          <label>Top right <input id="radiusTRInput" type="number" min="0" max="1000" value="32"></label>
-          <label>Bottom left <input id="radiusBLInput" type="number" min="0" max="1000" value="32"></label>
-          <label>Bottom right <input id="radiusBRInput" type="number" min="0" max="1000" value="32"></label>
+          <label>Top left <input id="radiusTLInput" type="number" min="0" max="1000" step="0.01" value="32"></label>
+          <label>Top right <input id="radiusTRInput" type="number" min="0" max="1000" step="0.01" value="32"></label>
+          <label>Bottom left <input id="radiusBLInput" type="number" min="0" max="1000" step="0.01" value="32"></label>
+          <label>Bottom right <input id="radiusBRInput" type="number" min="0" max="1000" step="0.01" value="32"></label>
         </div>
       </section>
 
       <section class="control-section">
         <h2>Border</h2>
         <div class="grid-3">
-          <label>Width <input id="borderWidthInput" type="number" min="0" max="50" step="0.5" value="0"></label>
+          <label>Width <input id="borderWidthInput" type="number" min="0" max="100" step="0.5" value="0"></label>
           <label>Color <input id="borderColorInput" type="text" value="#FFFFFF" maxlength="7"></label>
-          <label>Opacity <input id="borderOpacityInput" type="number" min="0" max="100" value="100"><span class="suffix">%</span></label>
+          <label>Opacity <input id="borderOpacityInput" type="number" min="0" max="100" step="0.01" value="100"><span class="suffix">%</span></label>
         </div>
       </section>
 
