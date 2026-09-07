@@ -13,7 +13,7 @@
   <header class="topbar">
     <div>
       <h1>Background Studio</h1>
-      <p>Gradient · Shadow · Radius · Tag · Image & Code Export</p>
+      <p>Gradient · Shadow · Radius · Border · Image & Code Export</p>
     </div>
     <div class="top-actions">
       <button id="randomBtn" class="secondary">Random</button>
@@ -36,31 +36,38 @@
         <label class="switch-row"><input id="transparentOutsideInput" type="checkbox" checked><span>Transparent outside rounded shape</span></label>
       </section>
 
-      <section class="control-section tag-section">
+      <section class="control-section layout-import-section">
         <div class="section-title-row">
           <div>
-            <h2>Tag / Badge</h2>
-            <p class="section-note">Dynamic text badge with an Auto Layout friendly UIKit export.</p>
+            <h2>Layout / Auto Layout</h2>
+            <p class="section-note">Paste Figma/CSS layout values. They are mapped to CSS, UIKit Auto Layout / UIStackView, and SwiftUI.</p>
           </div>
-          <label class="mini-switch"><input id="tagEnabledInput" type="checkbox"><span>On</span></label>
+          <button id="applyLayoutBtn" class="primary tiny">Parse & Apply</button>
         </div>
-        <div id="tagControls" class="tag-controls hidden">
-          <label>Text <input id="tagTextInput" type="text" value="Hot" placeholder="Hot"></label>
-          <div class="grid-2">
-            <label>Font size <input id="tagFontSizeInput" type="number" min="8" max="80" step="1" value="14"></label>
-            <label>Font weight <input id="tagFontWeightInput" type="number" min="100" max="900" step="100" value="600"></label>
-          </div>
-          <div class="grid-3">
-            <label>H padding <input id="tagHPaddingInput" type="number" min="0" max="100" step="1" value="8"></label>
-            <label>V padding <input id="tagVPaddingInput" type="number" min="0" max="100" step="1" value="4"></label>
-            <label>Tip width <input id="tagTipWidthInput" type="number" min="0" max="100" step="1" value="6"></label>
-          </div>
-          <div class="grid-3">
-            <label>Min height <input id="tagMinHeightInput" type="number" min="0" max="200" step="1" value="24"></label>
-            <label>Background <input id="tagBgColorInput" type="text" value="#F04438" maxlength="7"></label>
-            <label>Text color <input id="tagTextColorInput" type="text" value="#FFFFFF" maxlength="7"></label>
-          </div>
-          <p class="section-note">Width is never fixed: the badge expands from its text + padding + tip.</p>
+        <textarea id="layoutImportInput" class="css-import" rows="7" spellcheck="false" placeholder="display: flex;&#10;width: 343px;&#10;flex-direction: column;&#10;justify-content: flex-end;&#10;align-items: flex-start;&#10;gap: var(--spacing-8x, 8px);"></textarea>
+        <div class="import-actions">
+          <span id="layoutImportStatus" class="status compact" aria-live="polite">Paste layout CSS. Ctrl/⌘ + Enter also works.</span>
+          <button id="loadLayoutExampleBtn" class="tiny">Load example</button>
+        </div>
+        <div id="layoutControls" class="layout-grid">
+          <label>Display
+            <select id="layoutDisplayInput"><option value="flex">Flex</option><option value="inline-flex">Inline flex</option><option value="block">Block</option></select>
+          </label>
+          <label>Direction
+            <select id="layoutDirectionInput"><option value="column">Column</option><option value="row">Row</option></select>
+          </label>
+          <label>Justify
+            <select id="layoutJustifyInput">
+              <option value="flex-start">Start</option><option value="center">Center</option><option value="flex-end">End</option>
+              <option value="space-between">Space between</option><option value="space-around">Space around</option><option value="space-evenly">Space evenly</option>
+            </select>
+          </label>
+          <label>Align
+            <select id="layoutAlignInput"><option value="flex-start">Start</option><option value="center">Center</option><option value="flex-end">End</option><option value="stretch">Stretch</option></select>
+          </label>
+          <label>Gap <input id="layoutGapInput" type="number" min="0" max="500" step="0.01" value="0"><span class="suffix">px</span></label>
+          <label>Width <input id="layoutWidthInput" type="text" value="auto" placeholder="343px / auto"></label>
+          <label>Height <input id="layoutHeightInput" type="text" value="auto" placeholder="auto / 200px"></label>
         </div>
       </section>
 
@@ -130,6 +137,28 @@
           <label>Width <input id="borderWidthInput" type="number" min="0" max="50" step="0.5" value="0"></label>
           <label>Color <input id="borderColorInput" type="text" value="#FFFFFF" maxlength="7"></label>
           <label>Opacity <input id="borderOpacityInput" type="number" min="0" max="100" value="100"><span class="suffix">%</span></label>
+        </div>
+      </section>
+
+      <section class="control-section">
+        <div class="section-title-row"><h2>Dynamic Tag / Badge</h2><label class="mini-switch"><input id="tagEnabledInput" type="checkbox"><span>On</span></label></div>
+        <div id="tagControls" class="hidden">
+          <div class="grid-2">
+            <label>Text <input id="tagTextInput" type="text" value="Hot"></label>
+            <label>Min height <input id="tagMinHeightInput" type="number" min="0" max="200" value="24"></label>
+          </div>
+          <div class="grid-4 color-row">
+            <label>Font size <input id="tagFontSizeInput" type="number" min="8" max="80" value="14"></label>
+            <label>Weight <input id="tagFontWeightInput" type="number" min="100" max="900" step="100" value="600"></label>
+            <label>H padding <input id="tagHPaddingInput" type="number" min="0" max="100" value="8"></label>
+            <label>V padding <input id="tagVPaddingInput" type="number" min="0" max="100" value="4"></label>
+          </div>
+          <div class="grid-3 color-row">
+            <label>Tip width <input id="tagTipWidthInput" type="number" min="0" max="100" value="6"></label>
+            <label>Background <input id="tagBgColorInput" type="text" value="#F04438" maxlength="7"></label>
+            <label>Text color <input id="tagTextColorInput" type="text" value="#FFFFFF" maxlength="7"></label>
+          </div>
+          <p class="section-note tag-note">UIKit export uses intrinsicContentSize + Auto Layout with no fixed width, so the badge grows with its text.</p>
         </div>
       </section>
 

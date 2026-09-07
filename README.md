@@ -29,6 +29,20 @@ A zero-backend visual background generator for designers and iOS/web developers.
 - 1× / 2× / 3× / 4× raster export
 - Runs entirely in the browser; no backend, no data upload
 
+
+## Figma/CSS style & layout import
+
+The editor now has two paste boxes:
+
+- **Paste CSS / Figma style** parses gradient, shadow, border and per-corner radius values.
+- **Layout / Auto Layout** parses `display`, fixed `width`/`height`, `flex-direction`, `justify-content`, `align-items`, and `gap` (including Figma variable fallbacks such as `var(--spacing-8x, 8px)`).
+
+Layout values are included in CSS output and mapped to UIKit `UIStackView` / Auto Layout and SwiftUI stack code.
+
+Radial gradients support explicit ellipse X/Y radii and centers outside the view bounds, e.g. `radial-gradient(147.02% 142.82% at 33.82% 122.46%, ...)`.
+
+The Dynamic Tag / Badge mode uses intrinsic content size in UIKit and deliberately emits no fixed width constraint, so its background shape expands with the text.
+
 ## Run locally
 
 No build step is required.
